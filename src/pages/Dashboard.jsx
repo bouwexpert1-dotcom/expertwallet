@@ -1,0 +1,112 @@
+import { useEffect, useState } from "react";
+import { base44 } from "@/api/base44Client";
+import { ArrowDownLeft, ArrowUpRight, ArrowLeftRight, Plus, Loader2 } from "lucide-react";
+import TransactionModal from "@/components/TransactionModal";
+import TransactionList from "@/components/TransactionList";
+
+export default function Dashboard() {
+  const [wallet, setWallet] = useState(null);
+  const [transactions, setTransactions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [modal, setModal] = useState(null); // 'deposit' | 'withdraw' | 'transfer'
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    init();
+  }, []);
+
+  async function init() {
+    const me = await base44.auth.me();
+    setUser(me);
+    let [wallets] = await Promise.all([
+      base44.entities.Wallet.filter({ owner_email: me.email }),
+    ]);
+    let w = wallets[0];
+    if (!w) {
+      w = await base44.entities.Wallet.create({ owner_email: me.email, balance: 0, currency: "USD" });
+    }
+    setWallet(w);
+    const txs = await base44.entities.Transaction.filter({ owner_email: me.email }, "-created_date", 50);
+    setTransactions(txs);
+    setLoading(false);
+  }
+
+  async function handleTransaction(type, amount, note, recipientEmail) {
+    let newBalance = wallet.balance;
+    if (type === "deposit") newBalance += amount;
+    else if (type === "withdraw") newBalance -= amount;
+    else if (type === "transfer") newBalance -= amount;
+
+    await base44.entities.Wallet.update(wallet.id, { balance: newBalance });
+    await base44.entities.Transaction.create({
+      wallet_id: wallet.id,
+      owner_email: user.email,
+      type,
+      amount,
+      note,
+      recipient_email: recipientEmail || "",
+    });
+    setWallet((w) => ({ ...w, balance: newBalance }));
+    const txs = await base44.entities.Transaction.filter({ owner_email: user.email }, "-created_date", 50);
+    setTransactions(txs);
+    setModal(null);
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-wallet-dark flex items-center justify-center">
+        <Loader2 className="text-wallet-gold animate-spin" size={32} />
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-wallet-dark text-white font-sans px-4 py-8 max-w-2xl mx-auto">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-10">
+        <span className="text-xl font-bold text-wallet-gold">Expert<span className="text-white">Wallet</span></span>
+        <span className="text-wallet-muted text-sm">{user?.full_name || user?.email}</span>
+      </div>
+
+      {/* Balance Card */}
+      <div className="rounded-3xl bg-gradient-to-br from-yellow-500/20 to-yellow-900/10 border border-wallet-gold/30 p-8 mb-8 flex flex-col gap-2">
+        <p className="text-wallet-muted text-sm uppercase tracking-widest">Total Balance</p>
+        <p className="text-5xl font-extrabold text-white">
+          ${wallet.balance.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+          <span className="text-wallet-muted text-lg font-normal ml-2">{wallet.currency}</span>
+        </p>
+      </div>
+
+      {/* Actions */}
+      <div className="grid grid-cols-3 gap-4 mb-10">
+        {[
+          { label: "Deposit", icon: <ArrowDownLeft size={20} />, type: "deposit", color: "text-green-400" },
+          { label: "Withdraw", icon: <ArrowUpRight size={20} />, type: "withdraw", color: "text-red-400" },
+          { label: "Transfer", icon: <ArrowLeftRight size={20} />, type: "transfer", color: "text-blue-400" },
+        ].map((a) => (
+          <button
+            key={a.type}
+            onClick={() => setModal(a.type)}
+            className="flex flex-col items-center gap-2 py-5 rounded-2xl border border-wallet-border bg-wallet-card hover:border-wallet-gold/40 transition-all"
+          >
+            <span className={a.color}>{a.icon}</span>
+            <span className="text-sm font-medium text-white">{a.label}</span>
+          </button>
+        ))}
+      </div>
+
+      {/* Transactions */}
+      <TransactionList transactions={transactions} />
+
+      {/* Modal */}
+      {modal && (
+        <TransactionModal
+          type={modal}
+          walletBalance={wallet.balance}
+          onConfirm={handleTransaction}
+          onClose={() => setModal(null)}
+        />
+      )}
+    </div>
+  );
+}

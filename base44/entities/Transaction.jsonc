@@ -1,0 +1,35 @@
+{
+  "name": "Transaction",
+  "type": "object",
+  "properties": {
+    "wallet_id": {
+      "type": "string"
+    },
+    "owner_email": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "deposit",
+        "withdraw",
+        "transfer"
+      ]
+    },
+    "amount": {
+      "type": "number"
+    },
+    "note": {
+      "type": "string"
+    },
+    "recipient_email": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "wallet_id",
+    "owner_email",
+    "type",
+    "amount"
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "name": "Wallet",
+  "type": "object",
+  "properties": {
+    "owner_email": {
+      "type": "string"
+    },
+    "balance": {
+      "type": "number",
+      "default": 0
+    },
+    "currency": {
+      "type": "string",
+      "default": "USD"
+    }
+  },
+  "required": [
+    "owner_email",
+    "balance"
+  ]
+}
