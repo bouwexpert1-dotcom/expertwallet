@@ -10,7 +10,7 @@ export default function Dashboard() {
   const [wallet, setWallet] = useState(null);
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [modal, setModal] = useState(null); // 'deposit' | 'withdraw' | 'transfer' | 'paypal'
+  const [modal, setModal] = useState(null);
   const [user, setUser] = useState(null);
 
   useEffect(() => {
@@ -20,9 +20,7 @@ export default function Dashboard() {
   async function init() {
     const me = await base44.auth.me();
     setUser(me);
-    let [wallets] = await Promise.all([
-      base44.entities.Wallet.filter({ owner_email: me.email }),
-    ]);
+    let wallets = await base44.entities.Wallet.filter({ owner_email: me.email });
     let w = wallets[0];
     if (!w) {
       w = await base44.entities.Wallet.create({ owner_email: me.email, balance: 0, currency: "USD" });
@@ -105,12 +103,9 @@ export default function Dashboard() {
       {/* Transactions */}
       <TransactionList transactions={transactions} />
 
-      {/* Modal */}
+      {/* Modals */}
       {modal === "paypal" && (
-        <PayPalDepositModal
-          onConfirm={handleTransaction}
-          onClose={() => setModal(null)}
-        />
+        <PayPalDepositModal onConfirm={handleTransaction} onClose={() => setModal(null)} />
       )}
       {(modal === "withdraw" || modal === "transfer") && (
         <TransactionModal
