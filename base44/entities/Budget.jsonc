@@ -1,0 +1,21 @@
+{
+  "name": "Budget",
+  "type": "object",
+  "properties": {
+    "owner_email": {
+      "type": "string"
+    },
+    "monthly_limit": {
+      "type": "number",
+      "default": 1000
+    },
+    "month": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "owner_email",
+    "monthly_limit",
+    "month"
+  ]
+}

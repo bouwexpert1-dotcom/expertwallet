@@ -3,6 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { ArrowDownLeft, ArrowUpRight, ArrowLeftRight, BarChart2, Loader2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import TransactionModal from "@/components/TransactionModal";
+import BudgetProgress from "@/components/BudgetProgress";
 import PayPalDepositModal from "@/components/PayPalDepositModal";
 import TransactionList from "@/components/TransactionList";
 
@@ -99,6 +100,9 @@ export default function Dashboard() {
           </button>
         ))}
       </div>
+
+      {/* Budget Progress */}
+      <BudgetProgress transactions={transactions} userEmail={user?.email} />
 
       {/* Transactions */}
       <TransactionList transactions={transactions} />
