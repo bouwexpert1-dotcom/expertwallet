@@ -2,13 +2,14 @@ import { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { ArrowDownLeft, ArrowUpRight, ArrowLeftRight, Plus, Loader2 } from "lucide-react";
 import TransactionModal from "@/components/TransactionModal";
+import PayPalDepositModal from "@/components/PayPalDepositModal";
 import TransactionList from "@/components/TransactionList";
 
 export default function Dashboard() {
   const [wallet, setWallet] = useState(null);
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [modal, setModal] = useState(null); // 'deposit' | 'withdraw' | 'transfer'
+  const [modal, setModal] = useState(null); // 'deposit' | 'withdraw' | 'transfer' | 'paypal'
   const [user, setUser] = useState(null);
 
   useEffect(() => {
@@ -80,7 +81,7 @@ export default function Dashboard() {
       {/* Actions */}
       <div className="grid grid-cols-3 gap-4 mb-10">
         {[
-          { label: "Deposit", icon: <ArrowDownLeft size={20} />, type: "deposit", color: "text-green-400" },
+          { label: "Deposit", icon: <ArrowDownLeft size={20} />, type: "paypal", color: "text-green-400" },
           { label: "Withdraw", icon: <ArrowUpRight size={20} />, type: "withdraw", color: "text-red-400" },
           { label: "Transfer", icon: <ArrowLeftRight size={20} />, type: "transfer", color: "text-blue-400" },
         ].map((a) => (
@@ -99,7 +100,13 @@ export default function Dashboard() {
       <TransactionList transactions={transactions} />
 
       {/* Modal */}
-      {modal && (
+      {modal === "paypal" && (
+        <PayPalDepositModal
+          onConfirm={handleTransaction}
+          onClose={() => setModal(null)}
+        />
+      )}
+      {(modal === "withdraw" || modal === "transfer") && (
         <TransactionModal
           type={modal}
           walletBalance={wallet.balance}
