@@ -21,12 +21,17 @@ export default function BuyVIPModal({ userEmail, currentBalance, onClose, onSucc
     try {
       const response = await base44.functions.invoke("spendCredits", {
         amount: WALLET_CONFIG.VIP_PRICE_CREDITS,
-        type: "VIP"
+        type: "VIP",
+        return_url: WALLET_CONFIG.ROULETTE_VERIFY_URL
       });
 
       if (response.data.status === "approved") {
         setToken(response.data.token);
-        setStep("success");
+        // Redirigir automáticamente a ruleta sin mostrar token
+        setTimeout(() => {
+          const verifyUrl = `${WALLET_CONFIG.ROULETTE_VERIFY_URL}?token=${response.data.token}`;
+          window.location.href = verifyUrl;
+        }, 1500); // Pequeña pausa para UX smooth
       } else if (response.data.status === "insufficient_balance") {
         setError(`Te faltan ${response.data.missing} créditos`);
         setStep("error");
@@ -55,14 +60,12 @@ export default function BuyVIPModal({ userEmail, currentBalance, onClose, onSucc
             </div>
 
             <div className="bg-purple-500/10 border border-purple-400/30 rounded-xl p-4 space-y-3">
-              <div className="flex justify-between items-center">
-                <span className="text-wallet-muted">Beneficios VIP:</span>
-              </div>
+              <p className="text-wallet-muted text-sm font-semibold">🔓 Desbloquea análisis avanzado</p>
               <ul className="text-sm text-wallet-light space-y-2">
-                <li>✨ Acceso a ruleta premium</li>
-                <li>💎 Multiplicadores aumentados</li>
-                <li>🎁 Bonificaciones diarias</li>
-                <li>👑 Badge exclusivo</li>
+                <li>📊 Predicciones en tiempo real</li>
+                <li>⭐ Soporte prioritario</li>
+                <li>💎 Acceso exclusivo a datos premium</li>
+                <li>🚀 Sin límites de análisis</li>
               </ul>
             </div>
 
@@ -92,37 +95,25 @@ export default function BuyVIPModal({ userEmail, currentBalance, onClose, onSucc
         {step === "processing" && (
           <div className="flex flex-col items-center gap-4 py-8">
             <Loader2 size={48} className="text-purple-400 animate-spin" />
-            <p className="text-white font-semibold text-lg">Procesando compra...</p>
-            <p className="text-wallet-muted text-sm">Por favor espera</p>
+            <p className="text-white font-semibold text-lg">Activando VIP…</p>
+            <p className="text-wallet-muted text-sm">Te redirigiremos en un momento</p>
+            <div className="w-full bg-wallet-border rounded-full h-1.5 overflow-hidden">
+              <div className="h-full bg-purple-400 rounded-full animate-pulse w-3/4" />
+            </div>
           </div>
         )}
 
-        {/* STEP: Success */}
+        {/* STEP: Success (Hidden - Auto-redirects) */}
         {step === "success" && (
           <div className="flex flex-col items-center gap-4 py-6">
             <CheckCircle2 size={56} className="text-green-400" />
-            <p className="text-white font-bold text-xl">¡Compra Exitosa!</p>
+            <p className="text-white font-bold text-xl">¡VIP Activado! 🎉</p>
             <p className="text-wallet-muted text-sm text-center">
-              Ahora tienes acceso a VIP. Tu token de verificación es válido por 60 segundos.
+              Te estamos llevando a la ruleta...
             </p>
-            
-            <div className="w-full bg-wallet-dark border border-wallet-border rounded-xl p-4 text-xs font-mono text-wallet-muted break-all max-h-24 overflow-auto">
-              {token}
+            <div className="w-full bg-green-400/10 border border-green-400/30 rounded-xl px-4 py-3 text-xs text-green-300 text-center">
+              No cierres esta ventana
             </div>
-
-            <p className="text-xs text-wallet-muted text-center">
-              Serás redirigido a la app de ruleta automáticamente
-            </p>
-
-            <button
-              onClick={() => {
-                // Aquí irías a la app de ruleta
-                window.location.href = `https://ruleta-app.com?token=${token}`;
-              }}
-              className="w-full py-3 rounded-xl bg-purple-600 text-white font-bold hover:bg-purple-700 transition-colors"
-            >
-              Ir a Ruleta VIP
-            </button>
           </div>
         )}
 
