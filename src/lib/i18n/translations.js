@@ -303,5 +303,107 @@ export const translations = {
     success: "Sucesso",
     error: "Erro",
     close: "Fechar"
+  },
+  
+  nl: {
+    // Navigation & Header
+    analytics: "Analytics",
+    logout: "Afmelden",
+    
+    // Dashboard
+    dashboard: "Dashboard",
+    totalBalance: "Totaal Saldo",
+    deposit: "Storten",
+    withdraw: "Opnemen",
+    transfer: "Overschrijven",
+    moneyTransactions: "Geldtransacties",
+    creditHistory: "Creditgeschiedenis",
+    
+    // VIP Modal
+    buyVIP: "VIP Kopen",
+    unlockAdvanced: "🔓 Geavanceerde analyses ontgrendelen",
+    vipFeatures: {
+      predictions: "📊 Realtime voorspellingen",
+      support: "⭐ Prioriteitsondersteuning",
+      premium: "💎 Exclusieve premium gegevenstoegang",
+      unlimited: "🚀 Onbeperkte analyse"
+    },
+    cost: "Kosten:",
+    credits: "credits",
+    cancel: "Annuleren",
+    confirmPurchase: "Aankoop Bevestigen",
+    activatingVIP: "VIP Activeren…",
+    redirectingMoment: "We leiden je zo meteen door",
+    vipActivated: "VIP Geactiveerd! 🎉",
+    closingWindow: "Sluit dit venster niet",
+    errorPurchase: "Aankoopfout",
+    needCredits: "Je hebt nodig",
+    youMiss: "Je mist",
+    tryAgain: "Opnieuw Proberen",
+    
+    // PayPal Modal
+    paypalDeposit: "PayPal-storting",
+    selectAmount: "Bedrag Selecteren",
+    customAmount: "Of voer een aangepast bedrag in...",
+    paypalEmail: "PayPal-e-mail",
+    paypalPlaceholder: "jouw@paypal.com",
+    processingPayment: "Betaling Verwerken...",
+    connectingPaypal: "Veilig verbinden met PayPal",
+    paymentSuccessful: "Betaling Geslaagd!",
+    willBeAdded: "wordt toegevoegd aan je portemonnee",
+    transactionID: "Transactie-ID:",
+    addWallet: "Toevoegen aan Portemonnee",
+    paymentFailed: "Betaling Mislukt",
+    couldNotProcess: "Je PayPal-betaling kon niet worden verwerkt. Probeer het alstublieft opnieuw.",
+    
+    // Analytics
+    analyticsPage: "Analytics",
+    transactionStats: "Transactiestatistieken",
+    noTransactions: "Nog geen transacties. Begin met een storting!",
+    monthlyTrends: "Maandelijkse Trends",
+    categoryBreakdown: "Categoriebreakdown",
+    
+    // Budget
+    monthlyBudget: "Maandelijk Budget",
+    limit: "Limiet:",
+    spent: "Uitgegeven:",
+    remaining: "Resterend:",
+    editLimit: "Limiet Bewerken",
+    saveLimit: "Limiet Opslaan",
+    overBudget: "Je hebt je budget overschreden!",
+    
+    // Transactions
+    recentTransactions: "Recente Transacties",
+    transactionType: {
+      deposit: "Storting",
+      withdraw: "Opname",
+      transfer: "Overschrijving",
+      spend: "Uitgave",
+      reward: "Beloning"
+    },
+    
+    // Home/Landing
+    expertWallet: "ExpertWallet",
+    subheading: "Het veiligste en meest efficiënte portemonneeplatform",
+    description: "Beheer je geld met vertrouwen. Snelle stortingen, veilige opnames en directe overboeking.",
+    goToDashboard: "Ga naar Dashboard",
+    features: {
+      security: "🔒 Beveiliging",
+      securityDesc: "Bankencryptie voor al je transacties",
+      speed: "⚡ Snelheid",
+      speedDesc: "Transacties in seconden verwerkt",
+      tracking: "📊 Tracking",
+      trackingDesc: "Volledige en transparante geschiedenis van je geld"
+    },
+    
+    // Form Errors
+    minimumDeposit: "Minimale storting is $1,00",
+    enterPaypalEmail: "Voer je PayPal-e-mailadres in",
+    
+    // General
+    loading: "Laden...",
+    success: "Succes",
+    error: "Fout",
+    close: "Sluiten"
   }
 };
