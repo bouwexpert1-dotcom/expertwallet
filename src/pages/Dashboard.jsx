@@ -6,6 +6,8 @@ import TransactionModal from "@/components/TransactionModal";
 import BudgetProgress from "@/components/BudgetProgress";
 import PayPalDepositModal from "@/components/PayPalDepositModal";
 import TransactionList from "@/components/TransactionList";
+import WalletCredits from "@/components/WalletCredits";
+import BuyVIPModal from "@/components/BuyVIPModal";
 
 export default function Dashboard() {
   const [wallet, setWallet] = useState(null);
@@ -13,6 +15,7 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [modal, setModal] = useState(null);
   const [user, setUser] = useState(null);
+  const [showVIPModal, setShowVIPModal] = useState(false);
 
   useEffect(() => {
     init();
@@ -83,6 +86,9 @@ export default function Dashboard() {
         </p>
       </div>
 
+      {/* Wallet Credits */}
+      <WalletCredits userEmail={user?.email} onBuyVIP={() => setShowVIPModal(true)} />
+
       {/* Actions */}
       <div className="grid grid-cols-3 gap-4 mb-10">
         {[
@@ -117,6 +123,13 @@ export default function Dashboard() {
           walletBalance={wallet.balance}
           onConfirm={handleTransaction}
           onClose={() => setModal(null)}
+        />
+      )}
+      {showVIPModal && (
+        <BuyVIPModal
+          userEmail={user?.email}
+          currentBalance={wallet.balance}
+          onClose={() => setShowVIPModal(false)}
         />
       )}
     </div>
