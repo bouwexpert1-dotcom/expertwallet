@@ -1,16 +1,18 @@
 import { useState } from "react";
 import { base44 } from "@/api/base44Client";
+import { useLanguage } from "@/lib/LanguageContext";
 import { X, AlertCircle, Loader2, CheckCircle2 } from "lucide-react";
 import { WALLET_CONFIG } from "@/lib/walletConfig";
 
 export default function BuyVIPModal({ userEmail, currentBalance, onClose, onSuccess }) {
+  const { t } = useLanguage();
   const [step, setStep] = useState("confirm"); // confirm | processing | success | error
   const [error, setError] = useState("");
   const [token, setToken] = useState("");
 
   async function handleBuyVIP() {
     if (currentBalance < WALLET_CONFIG.VIP_PRICE_CREDITS) {
-      setError(`Necesitas ${WALLET_CONFIG.VIP_PRICE_CREDITS} créditos. Te faltan ${WALLET_CONFIG.VIP_PRICE_CREDITS - currentBalance}.`);
+      setError(`${t('needCredits')} ${WALLET_CONFIG.VIP_PRICE_CREDITS} ${t('credits')}. ${t('youMiss')} ${WALLET_CONFIG.VIP_PRICE_CREDITS - currentBalance}.`);
       setStep("error");
       return;
     }
@@ -53,25 +55,25 @@ export default function BuyVIPModal({ userEmail, currentBalance, onClose, onSucc
         {step === "confirm" && (
           <>
             <div className="flex items-center justify-between">
-              <h2 className="text-white text-xl font-bold">Comprar VIP</h2>
+              <h2 className="text-white text-xl font-bold">{t('buyVIP')}</h2>
               <button onClick={onClose} className="text-wallet-muted hover:text-white">
                 <X size={20} />
               </button>
             </div>
 
             <div className="bg-purple-500/10 border border-purple-400/30 rounded-xl p-4 space-y-3">
-              <p className="text-wallet-muted text-sm font-semibold">🔓 Desbloquea análisis avanzado</p>
+              <p className="text-wallet-muted text-sm font-semibold">{t('unlockAdvanced')}</p>
               <ul className="text-sm text-wallet-light space-y-2">
-                <li>📊 Predicciones en tiempo real</li>
-                <li>⭐ Soporte prioritario</li>
-                <li>💎 Acceso exclusivo a datos premium</li>
-                <li>🚀 Sin límites de análisis</li>
+                <li>{t('vipFeatures.predictions')}</li>
+                <li>{t('vipFeatures.support')}</li>
+                <li>{t('vipFeatures.premium')}</li>
+                <li>{t('vipFeatures.unlimited')}</li>
               </ul>
             </div>
 
             <div className="flex justify-between items-center bg-wallet-dark rounded-xl p-4">
-              <span className="text-wallet-muted">Costo:</span>
-              <span className="text-2xl font-bold text-purple-300">{WALLET_CONFIG.VIP_PRICE_CREDITS} créditos</span>
+              <span className="text-wallet-muted">{t('cost')}</span>
+              <span className="text-2xl font-bold text-purple-300">{WALLET_CONFIG.VIP_PRICE_CREDITS} {t('credits')}</span>
             </div>
 
             <div className="flex gap-3">
@@ -79,13 +81,13 @@ export default function BuyVIPModal({ userEmail, currentBalance, onClose, onSucc
                 onClick={onClose}
                 className="flex-1 py-3 rounded-xl border border-wallet-border text-wallet-muted hover:text-white transition-colors"
               >
-                Cancelar
+                {t('cancel')}
               </button>
               <button
                 onClick={handleBuyVIP}
                 className="flex-1 py-3 rounded-xl bg-purple-600 text-white font-bold hover:bg-purple-700 transition-colors"
               >
-                Confirmar Compra
+                {t('confirmPurchase')}
               </button>
             </div>
           </>
@@ -95,8 +97,8 @@ export default function BuyVIPModal({ userEmail, currentBalance, onClose, onSucc
         {step === "processing" && (
           <div className="flex flex-col items-center gap-4 py-8">
             <Loader2 size={48} className="text-purple-400 animate-spin" />
-            <p className="text-white font-semibold text-lg">Activando VIP…</p>
-            <p className="text-wallet-muted text-sm">Te redirigiremos en un momento</p>
+            <p className="text-white font-semibold text-lg">{t('activatingVIP')}</p>
+            <p className="text-wallet-muted text-sm">{t('redirectingMoment')}</p>
             <div className="w-full bg-wallet-border rounded-full h-1.5 overflow-hidden">
               <div className="h-full bg-purple-400 rounded-full animate-pulse w-3/4" />
             </div>
@@ -107,12 +109,12 @@ export default function BuyVIPModal({ userEmail, currentBalance, onClose, onSucc
         {step === "success" && (
           <div className="flex flex-col items-center gap-4 py-6">
             <CheckCircle2 size={56} className="text-green-400" />
-            <p className="text-white font-bold text-xl">¡VIP Activado! 🎉</p>
+            <p className="text-white font-bold text-xl">{t('vipActivated')}</p>
             <p className="text-wallet-muted text-sm text-center">
               Te estamos llevando a la ruleta...
             </p>
             <div className="w-full bg-green-400/10 border border-green-400/30 rounded-xl px-4 py-3 text-xs text-green-300 text-center">
-              No cierres esta ventana
+              {t('closingWindow')}
             </div>
           </div>
         )}
@@ -121,7 +123,7 @@ export default function BuyVIPModal({ userEmail, currentBalance, onClose, onSucc
         {step === "error" && (
           <div className="flex flex-col items-center gap-4 py-6">
             <AlertCircle size={56} className="text-red-400" />
-            <p className="text-white font-bold text-xl">Error en la Compra</p>
+            <p className="text-white font-bold text-xl">{t('errorPurchase')}</p>
             <p className="text-red-300 text-sm text-center">{error}</p>
             
             <div className="flex gap-3 w-full">
@@ -129,13 +131,13 @@ export default function BuyVIPModal({ userEmail, currentBalance, onClose, onSucc
                 onClick={() => setStep("confirm")}
                 className="flex-1 py-3 rounded-xl bg-purple-600 text-white font-bold hover:bg-purple-700 transition-colors"
               >
-                Intentar de Nuevo
+                {t('tryAgain')}
               </button>
               <button
                 onClick={onClose}
                 className="flex-1 py-3 rounded-xl border border-wallet-border text-wallet-muted hover:text-white transition-colors"
               >
-                Cerrar
+                {t('close')}
               </button>
             </div>
           </div>

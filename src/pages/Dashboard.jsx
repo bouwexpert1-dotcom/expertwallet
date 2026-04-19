@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
+import { useLanguage } from "@/lib/LanguageContext";
 import { ArrowDownLeft, ArrowUpRight, ArrowLeftRight, BarChart2, Loader2 } from "lucide-react";
 import { Link } from "react-router-dom";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 import TransactionModal from "@/components/TransactionModal";
 import BudgetProgress from "@/components/BudgetProgress";
 import PayPalDepositModal from "@/components/PayPalDepositModal";
@@ -11,6 +13,7 @@ import BuyVIPModal from "@/components/BuyVIPModal";
 import TransactionHistory from "@/components/TransactionHistory";
 
 export default function Dashboard() {
+  const { t } = useLanguage();
   const [wallet, setWallet] = useState(null);
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -71,8 +74,9 @@ export default function Dashboard() {
       <div className="flex items-center justify-between mb-10">
         <span className="text-xl font-bold text-wallet-gold">Expert<span className="text-white">Wallet</span></span>
         <div className="flex items-center gap-3">
+          <LanguageSwitcher />
           <Link to="/analytics" className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-wallet-border text-wallet-muted hover:text-wallet-gold hover:border-wallet-gold/40 transition-colors text-xs font-medium">
-            <BarChart2 size={13} /> Analytics
+            <BarChart2 size={13} /> {t('analytics')}
           </Link>
           <span className="text-wallet-muted text-sm">{user?.full_name || user?.email}</span>
         </div>
@@ -80,7 +84,7 @@ export default function Dashboard() {
 
       {/* Balance Card */}
       <div className="rounded-3xl bg-gradient-to-br from-yellow-500/20 to-yellow-900/10 border border-wallet-gold/30 p-8 mb-8 flex flex-col gap-2">
-        <p className="text-wallet-muted text-sm uppercase tracking-widest">Total Balance</p>
+        <p className="text-wallet-muted text-sm uppercase tracking-widest">{t('totalBalance')}</p>
         <p className="text-5xl font-extrabold text-white">
           ${wallet.balance.toLocaleString("en-US", { minimumFractionDigits: 2 })}
           <span className="text-wallet-muted text-lg font-normal ml-2">{wallet.currency}</span>
@@ -93,9 +97,9 @@ export default function Dashboard() {
       {/* Actions */}
       <div className="grid grid-cols-3 gap-4 mb-10">
         {[
-          { label: "Deposit", icon: <ArrowDownLeft size={20} />, type: "paypal", color: "text-green-400" },
-          { label: "Withdraw", icon: <ArrowUpRight size={20} />, type: "withdraw", color: "text-red-400" },
-          { label: "Transfer", icon: <ArrowLeftRight size={20} />, type: "transfer", color: "text-blue-400" },
+          { label: t('deposit'), icon: <ArrowDownLeft size={20} />, type: "paypal", color: "text-green-400" },
+          { label: t('withdraw'), icon: <ArrowUpRight size={20} />, type: "withdraw", color: "text-red-400" },
+          { label: t('transfer'), icon: <ArrowLeftRight size={20} />, type: "transfer", color: "text-blue-400" },
         ].map((a) => (
           <button
             key={a.type}
@@ -114,11 +118,11 @@ export default function Dashboard() {
       {/* Transactions */}
       <div className="grid md:grid-cols-2 gap-8">
         <div>
-          <h3 className="text-wallet-muted text-xs uppercase tracking-widest mb-4">Transacciones de Dinero</h3>
+          <h3 className="text-wallet-muted text-xs uppercase tracking-widest mb-4">{t('moneyTransactions')}</h3>
           <TransactionList transactions={transactions} />
         </div>
         <div>
-          <h3 className="text-wallet-muted text-xs uppercase tracking-widest mb-4">Historial de Créditos</h3>
+          <h3 className="text-wallet-muted text-xs uppercase tracking-widest mb-4">{t('creditHistory')}</h3>
           <TransactionHistory userEmail={user?.email} />
         </div>
       </div>
