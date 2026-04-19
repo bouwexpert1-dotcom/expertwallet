@@ -21,11 +21,15 @@
       "enum": [
         "pending",
         "completed",
+        "consumed",
         "failed"
       ],
       "default": "completed"
     },
     "description": {
+      "type": "string"
+    },
+    "jti": {
       "type": "string"
     }
   },

@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { X, AlertCircle, Loader2, CheckCircle2 } from "lucide-react";
-
-const VIP_COST = 50;
+import { WALLET_CONFIG } from "@/lib/walletConfig";
 
 export default function BuyVIPModal({ userEmail, currentBalance, onClose, onSuccess }) {
   const [step, setStep] = useState("confirm"); // confirm | processing | success | error
@@ -10,8 +9,8 @@ export default function BuyVIPModal({ userEmail, currentBalance, onClose, onSucc
   const [token, setToken] = useState("");
 
   async function handleBuyVIP() {
-    if (currentBalance < VIP_COST) {
-      setError(`Necesitas ${VIP_COST} créditos. Te faltan ${VIP_COST - currentBalance}.`);
+    if (currentBalance < WALLET_CONFIG.VIP_PRICE_CREDITS) {
+      setError(`Necesitas ${WALLET_CONFIG.VIP_PRICE_CREDITS} créditos. Te faltan ${WALLET_CONFIG.VIP_PRICE_CREDITS - currentBalance}.`);
       setStep("error");
       return;
     }
@@ -21,15 +20,16 @@ export default function BuyVIPModal({ userEmail, currentBalance, onClose, onSucc
 
     try {
       const response = await base44.functions.invoke("spendCredits", {
-        amount: VIP_COST,
+        amount: WALLET_CONFIG.VIP_PRICE_CREDITS,
         type: "VIP"
       });
 
-      if (response.data.success) {
+      if (response.data.status === "approved") {
         setToken(response.data.token);
         setStep("success");
-        // Aquí irías a la app de ruleta con el token
-        // window.location.href = `https://ruleta-app.com?token=${response.data.token}`;
+      } else if (response.data.status === "insufficient_balance") {
+        setError(`Te faltan ${response.data.missing} créditos`);
+        setStep("error");
       } else {
         setError("Error al procesar la compra");
         setStep("error");
@@ -68,7 +68,7 @@ export default function BuyVIPModal({ userEmail, currentBalance, onClose, onSucc
 
             <div className="flex justify-between items-center bg-wallet-dark rounded-xl p-4">
               <span className="text-wallet-muted">Costo:</span>
-              <span className="text-2xl font-bold text-purple-300">{VIP_COST} créditos</span>
+              <span className="text-2xl font-bold text-purple-300">{WALLET_CONFIG.VIP_PRICE_CREDITS} créditos</span>
             </div>
 
             <div className="flex gap-3">

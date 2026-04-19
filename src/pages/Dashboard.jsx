@@ -8,6 +8,7 @@ import PayPalDepositModal from "@/components/PayPalDepositModal";
 import TransactionList from "@/components/TransactionList";
 import WalletCredits from "@/components/WalletCredits";
 import BuyVIPModal from "@/components/BuyVIPModal";
+import TransactionHistory from "@/components/TransactionHistory";
 
 export default function Dashboard() {
   const [wallet, setWallet] = useState(null);
@@ -111,7 +112,16 @@ export default function Dashboard() {
       <BudgetProgress transactions={transactions} userEmail={user?.email} />
 
       {/* Transactions */}
-      <TransactionList transactions={transactions} />
+      <div className="grid md:grid-cols-2 gap-8">
+        <div>
+          <h3 className="text-wallet-muted text-xs uppercase tracking-widest mb-4">Transacciones de Dinero</h3>
+          <TransactionList transactions={transactions} />
+        </div>
+        <div>
+          <h3 className="text-wallet-muted text-xs uppercase tracking-widest mb-4">Historial de Créditos</h3>
+          <TransactionHistory userEmail={user?.email} />
+        </div>
+      </div>
 
       {/* Modals */}
       {modal === "paypal" && (
