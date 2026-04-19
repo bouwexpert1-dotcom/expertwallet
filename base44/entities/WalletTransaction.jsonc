@@ -1,0 +1,37 @@
+{
+  "name": "WalletTransaction",
+  "type": "object",
+  "properties": {
+    "user_id": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "deposit",
+        "spend",
+        "reward"
+      ]
+    },
+    "amount": {
+      "type": "number"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "completed",
+        "failed"
+      ],
+      "default": "completed"
+    },
+    "description": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "user_id",
+    "type",
+    "amount"
+  ]
+}
