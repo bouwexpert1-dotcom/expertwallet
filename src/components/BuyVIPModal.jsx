@@ -21,19 +21,19 @@ export default function BuyVIPModal({ userEmail, currentBalance, onClose, onSucc
     setError("");
 
     try {
+      const callbackUrl = WALLET_CONFIG.ROULETTE_VERIFY_URL;
+
       const response = await base44.functions.invoke("spendCredits", {
         amount: WALLET_CONFIG.VIP_PRICE_CREDITS,
         type: "VIP",
-        return_url: WALLET_CONFIG.ROULETTE_VERIFY_URL
+        return_url: callbackUrl
       });
 
       if (response.data.status === "approved") {
         setToken(response.data.token);
-        // Redirigir automáticamente a ruleta sin mostrar token
         setTimeout(() => {
-          const verifyUrl = `${WALLET_CONFIG.ROULETTE_VERIFY_URL}?token=${response.data.token}`;
-          window.location.href = verifyUrl;
-        }, 1500); // Pequeña pausa para UX smooth
+          window.location.href = `${callbackUrl}?token=${response.data.token}`;
+        }, 1500);
       } else if (response.data.status === "insufficient_balance") {
         setError(`Te faltan ${response.data.missing} créditos`);
         setStep("error");
