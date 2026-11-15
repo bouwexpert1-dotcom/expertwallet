@@ -12,12 +12,14 @@ export default function WalletCredits({ userEmail, onBuyVIP }) {
 
   async function loadBalance() {
     try {
-      const wallets = await base44.entities.WalletBalance.filter({ user_id: userEmail });
+      // El saldo se indexa por user_id (id del usuario), nunca por email
+      const me = await base44.auth.me();
+      const wallets = await base44.entities.WalletBalance.filter({ user_id: me.id });
       if (wallets[0]) {
         setBalance(wallets[0].balance);
       } else {
         // Crear wallet si no existe
-        const w = await base44.entities.WalletBalance.create({ user_id: userEmail, balance: 100 });
+        const w = await base44.entities.WalletBalance.create({ user_id: me.id, balance: 100 });
         setBalance(w.balance);
       }
     } catch (error) {

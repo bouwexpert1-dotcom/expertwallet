@@ -19,8 +19,9 @@ export default function TransactionHistory({ userEmail }) {
 
   async function loadTransactions() {
     try {
+      const me = await base44.auth.me();
       const txs = await base44.entities.WalletTransaction.filter(
-        { user_id: userEmail },
+        { user_id: me.id },
         "-created_date",
         10
       );

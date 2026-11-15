@@ -1,6 +1,6 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 
-const TOKEN_TTL_SECONDS = 60;
+const TOKEN_TTL_SECONDS = 120;
 
 Deno.serve(async (req) => {
   try {

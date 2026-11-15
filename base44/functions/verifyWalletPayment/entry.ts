@@ -8,7 +8,13 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 Deno.serve(async (req) => {
   try {
     const url = new URL(req.url);
-    const token = url.searchParams.get('token');
+    let token = url.searchParams.get('token');
+
+    // También se acepta el token en el body (útil para pruebas y POST)
+    if (!token) {
+      const body = await req.json().catch(() => ({}));
+      token = body?.token || null;
+    }
     
     if (!token) {
       return Response.json({ 
@@ -64,13 +70,13 @@ Deno.serve(async (req) => {
     if (decodedPayload.exp < now) {
       return Response.json({ 
         status: 'token_expired',
-        error: 'Token expirado (60 segundos)'
+        error: 'Token expirado (120 segundos)'
       }, { status: 401 });
     }
 
     // Marcar transacción como consumida (anti-doble gasto)
     const base44 = createClientFromRequest(req);
-    const transactions = await base44.entities.WalletTransaction.filter({ 
+    const transactions = await base44.asServiceRole.entities.WalletTransaction.filter({ 
       jti: decodedPayload.jti 
     });
     
@@ -90,7 +96,7 @@ Deno.serve(async (req) => {
     }
 
     // Marcar como consumido
-    await base44.entities.WalletTransaction.update(tx.id, { 
+    await base44.asServiceRole.entities.WalletTransaction.update(tx.id, { 
       status: 'consumed' 
     });
 

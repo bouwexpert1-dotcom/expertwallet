@@ -38,7 +38,7 @@ Deno.serve(async (req) => {
 
     // Verificar JTI no fue usado (anti-doble gasto)
     const base44 = createClientFromRequest(req);
-    const transactions = await base44.entities.WalletTransaction.filter({ jti: decodedPayload.jti });
+    const transactions = await base44.asServiceRole.entities.WalletTransaction.filter({ jti: decodedPayload.jti });
     
     if (transactions.length === 0) {
       return Response.json({ status: 'jti_not_found' }, { status: 404 });
@@ -49,7 +49,7 @@ Deno.serve(async (req) => {
     }
 
     // Marcar como consumido
-    await base44.entities.WalletTransaction.update(transactions[0].id, { status: 'consumed' });
+    await base44.asServiceRole.entities.WalletTransaction.update(transactions[0].id, { status: 'consumed' });
 
     return Response.json({ 
       status: 'valid',
