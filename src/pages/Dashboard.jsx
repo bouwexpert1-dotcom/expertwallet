@@ -140,11 +140,7 @@ export default function Dashboard() {
         />
       )}
       {showVIPModal && (
-        <BuyVIPModal
-          userEmail={user?.email}
-          currentBalance={wallet.balance}
-          onClose={() => setShowVIPModal(false)}
-        />
+        <BuyVIPModal onClose={() => setShowVIPModal(false)} />
       )}
     </div>
   );

@@ -4,7 +4,7 @@ import { useLanguage } from "@/lib/LanguageContext";
 import { X, AlertCircle, Loader2, CheckCircle2 } from "lucide-react";
 import { WALLET_CONFIG } from "@/lib/walletConfig";
 
-export default function BuyVIPModal({ userEmail, currentBalance, onClose, onSuccess }) {
+export default function BuyVIPModal({ onClose }) {
   const { t } = useLanguage();
   const [step, setStep] = useState("confirm"); // confirm | processing | success | error
   const [error, setError] = useState("");
