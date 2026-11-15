@@ -41,7 +41,7 @@ export default function BuyVIPModal({ onClose }) {
         setError(`Te faltan ${response.data.missing} créditos`);
         setStep("error");
       } else {
-        setError("Error al procesar la compra");
+        setError(response.data.error || "Error al procesar la compra");
         setStep("error");
       }
     } catch (err) {
