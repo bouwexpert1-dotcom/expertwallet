@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useLanguage } from "@/lib/LanguageContext";
 import { X, AlertCircle, Loader2, CheckCircle2 } from "lucide-react";
@@ -9,22 +9,25 @@ export default function BuyVIPModal({ userEmail, currentBalance, onClose, onSucc
   const [step, setStep] = useState("confirm"); // confirm | processing | success | error
   const [error, setError] = useState("");
   const [token, setToken] = useState("");
+  const [planPrice, setPlanPrice] = useState(null);
+
+  useEffect(() => {
+    base44.entities.Plan.filter({ code: "VIP", active: true }).then((plans) => {
+      if (plans[0]) setPlanPrice(plans[0].price_credits);
+    });
+  }, []);
+
+  const price = planPrice ?? WALLET_CONFIG.VIP_PRICE_CREDITS;
 
   async function handleBuyVIP() {
-    if (currentBalance < WALLET_CONFIG.VIP_PRICE_CREDITS) {
-      setError(`${t('needCredits')} ${WALLET_CONFIG.VIP_PRICE_CREDITS} ${t('credits')}. ${t('youMiss')} ${WALLET_CONFIG.VIP_PRICE_CREDITS - currentBalance}.`);
-      setStep("error");
-      return;
-    }
-
     setStep("processing");
     setError("");
 
     try {
       const callbackUrl = WALLET_CONFIG.ROULETTE_VERIFY_URL;
 
+      // Solo se envía el tipo: el precio lo resuelve el servidor
       const response = await base44.functions.invoke("spendCredits", {
-        amount: WALLET_CONFIG.VIP_PRICE_CREDITS,
         type: "VIP",
         return_url: callbackUrl
       });
@@ -73,7 +76,7 @@ export default function BuyVIPModal({ userEmail, currentBalance, onClose, onSucc
 
             <div className="flex justify-between items-center bg-wallet-dark rounded-xl p-4">
               <span className="text-wallet-muted">{t('cost')}</span>
-              <span className="text-2xl font-bold text-purple-300">{WALLET_CONFIG.VIP_PRICE_CREDITS} {t('credits')}</span>
+              <span className="text-2xl font-bold text-purple-300">{price} {t('credits')}</span>
             </div>
 
             <div className="flex gap-3">

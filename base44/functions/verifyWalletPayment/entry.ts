@@ -104,6 +104,7 @@ Deno.serve(async (req) => {
       email: decodedPayload.email,
       type: decodedPayload.type,
       amount_spent: decodedPayload.amount,
+      jti: decodedPayload.jti,
       activated_at: new Date().toISOString()
     });
   } catch (error) {
