@@ -10,12 +10,16 @@ import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
 import Analytics from './pages/Analytics';
+import Unsubscribe from './pages/Unsubscribe';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
 
+  // Public page: reachable signed out, outside the auth gate and the app nav
+  const isPublicUnsubscribe = window.location.pathname === '/unsubscribe';
+
   // Show loading spinner while checking app public settings or auth
-  if (isLoadingPublicSettings || isLoadingAuth) {
+  if (!isPublicUnsubscribe && (isLoadingPublicSettings || isLoadingAuth)) {
     return (
       <div className="fixed inset-0 flex items-center justify-center">
         <div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div>
@@ -24,7 +28,7 @@ const AuthenticatedApp = () => {
   }
 
   // Handle authentication errors
-  if (authError) {
+  if (!isPublicUnsubscribe && authError) {
     if (authError.type === 'user_not_registered') {
       return <UserNotRegisteredError />;
     } else if (authError.type === 'auth_required') {
@@ -40,6 +44,7 @@ const AuthenticatedApp = () => {
       <Route path="/" element={<Home />} />
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/analytics" element={<Analytics />} />
+      <Route path="/unsubscribe" element={<Unsubscribe />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
