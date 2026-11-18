@@ -10,7 +10,16 @@
       "enum": [
         "deposit",
         "spend",
-        "reward"
+        "reward",
+        "transfer_out",
+        "transfer_in"
+      ],
+      "enumColors": [
+        "green",
+        "red",
+        "yellow",
+        "blue",
+        "purple"
       ]
     },
     "amount": {
@@ -43,6 +52,9 @@
       "$or": [
         {
           "created_by_id": "{{user.id}}"
+        },
+        {
+          "data.user_id": "{{user.id}}"
         },
         {
           "user_condition": {

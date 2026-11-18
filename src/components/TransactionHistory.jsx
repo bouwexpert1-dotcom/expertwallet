@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { format } from "date-fns";
-import { ArrowUp, ArrowDown, Gift } from "lucide-react";
+import { ArrowUp, ArrowDown, Gift, ArrowLeftRight } from "lucide-react";
 
 const typeConfig = {
   spend: { icon: <ArrowUp size={16} />, color: "text-red-400", bg: "bg-red-400/10", label: "Gasto" },
   deposit: { icon: <ArrowDown size={16} />, color: "text-green-400", bg: "bg-green-400/10", label: "Depósito" },
   reward: { icon: <Gift size={16} />, color: "text-yellow-400", bg: "bg-yellow-400/10", label: "Recompensa" },
+  transfer_out: { icon: <ArrowLeftRight size={16} />, color: "text-orange-400", bg: "bg-orange-400/10", label: "Transferencia enviada" },
+  transfer_in: { icon: <ArrowLeftRight size={16} />, color: "text-teal-400", bg: "bg-teal-400/10", label: "Transferencia recibida" },
 };
 
 export default function TransactionHistory({ userEmail }) {
@@ -40,7 +42,7 @@ export default function TransactionHistory({ userEmail }) {
     <div className="space-y-2">
       {transactions.map((tx) => {
         const config = typeConfig[tx.type] || typeConfig.deposit;
-        const sign = tx.type === "spend" ? "-" : "+";
+        const sign = tx.type === "spend" || tx.type === "transfer_out" ? "-" : "+";
         
         return (
           <div key={tx.id} className="flex items-center gap-3 p-3 rounded-lg bg-wallet-card border border-wallet-border/50">

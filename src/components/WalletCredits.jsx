@@ -19,7 +19,7 @@ export default function WalletCredits({ userEmail, onBuyVIP }) {
         setBalance(wallets[0].balance);
       } else {
         // Crear wallet si no existe
-        const w = await base44.entities.WalletBalance.create({ user_id: me.id, balance: 100 });
+        const w = await base44.entities.WalletBalance.create({ user_id: me.id, balance: 0 });
         setBalance(w.balance);
       }
     } catch (error) {

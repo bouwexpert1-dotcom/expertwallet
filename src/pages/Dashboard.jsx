@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useLanguage } from "@/lib/LanguageContext";
-import { ArrowDownLeft, ArrowUpRight, ArrowLeftRight, BarChart2, Loader2 } from "lucide-react";
+import { ArrowDownLeft, ArrowLeftRight, BarChart2, Loader2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
-import TransactionModal from "@/components/TransactionModal";
+import TransferCreditsModal from "@/components/TransferCreditsModal";
 import BudgetProgress from "@/components/BudgetProgress";
 import PayPalDepositModal from "@/components/PayPalDepositModal";
 import TransactionList from "@/components/TransactionList";
@@ -20,6 +20,7 @@ export default function Dashboard() {
   const [modal, setModal] = useState(null);
   const [user, setUser] = useState(null);
   const [showVIPModal, setShowVIPModal] = useState(false);
+  const [creditsRefresh, setCreditsRefresh] = useState(0);
 
   useEffect(() => {
     init();
@@ -39,20 +40,17 @@ export default function Dashboard() {
     setLoading(false);
   }
 
-  async function handleTransaction(type, amount, note, recipientEmail) {
-    let newBalance = wallet.balance;
-    if (type === "deposit") newBalance += amount;
-    else if (type === "withdraw") newBalance -= amount;
-    else if (type === "transfer") newBalance -= amount;
+  async function handleDeposit(amount, note) {
+    const newBalance = wallet.balance + amount;
 
     await base44.entities.Wallet.update(wallet.id, { balance: newBalance });
     await base44.entities.Transaction.create({
       wallet_id: wallet.id,
       owner_email: user.email,
-      type,
+      type: "deposit",
       amount,
       note,
-      recipient_email: recipientEmail || "",
+      recipient_email: "",
     });
     setWallet((w) => ({ ...w, balance: newBalance }));
     const txs = await base44.entities.Transaction.filter({ owner_email: user.email }, "-created_date", 50);
@@ -92,14 +90,13 @@ export default function Dashboard() {
       </div>
 
       {/* Wallet Credits */}
-      <WalletCredits userEmail={user?.email} onBuyVIP={() => setShowVIPModal(true)} />
+      <WalletCredits key={`credits-${creditsRefresh}`} userEmail={user?.email} onBuyVIP={() => setShowVIPModal(true)} />
 
       {/* Actions */}
-      <div className="grid grid-cols-3 gap-4 mb-10">
+      <div className="grid grid-cols-2 gap-4 mb-10">
         {[
           { label: t('deposit'), icon: <ArrowDownLeft size={20} />, type: "paypal", color: "text-green-400" },
-          { label: t('withdraw'), icon: <ArrowUpRight size={20} />, type: "withdraw", color: "text-red-400" },
-          { label: t('transfer'), icon: <ArrowLeftRight size={20} />, type: "transfer", color: "text-blue-400" },
+          { label: "Transferir créditos", icon: <ArrowLeftRight size={20} />, type: "transferCredits", color: "text-blue-400" },
         ].map((a) => (
           <button
             key={a.type}
@@ -123,20 +120,18 @@ export default function Dashboard() {
         </div>
         <div>
           <h3 className="text-wallet-muted text-xs uppercase tracking-widest mb-4">{t('creditHistory')}</h3>
-          <TransactionHistory userEmail={user?.email} />
+          <TransactionHistory key={`history-${creditsRefresh}`} userEmail={user?.email} />
         </div>
       </div>
 
       {/* Modals */}
       {modal === "paypal" && (
-        <PayPalDepositModal onConfirm={handleTransaction} onClose={() => setModal(null)} />
+        <PayPalDepositModal onConfirm={handleDeposit} onClose={() => setModal(null)} />
       )}
-      {(modal === "withdraw" || modal === "transfer") && (
-        <TransactionModal
-          type={modal}
-          walletBalance={wallet.balance}
-          onConfirm={handleTransaction}
+      {modal === "transferCredits" && (
+        <TransferCreditsModal
           onClose={() => setModal(null)}
+          onDone={() => setCreditsRefresh((n) => n + 1)}
         />
       )}
       {showVIPModal && (
