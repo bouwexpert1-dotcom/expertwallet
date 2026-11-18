@@ -1,0 +1,41 @@
+{
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "app_user_auth",
+      "events": [
+        "signup",
+        "login"
+      ]
+    }
+  },
+  "name": "Apply Pending Deposits",
+  "description": "Acredita en el monedero los dep\u00f3sitos de SpinAtlas que llegaron con un email sin cuenta, en cuanto el cliente se registra o inicia sesi\u00f3n",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "apply_pending_deposits",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "apply_deposits": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "applyPendingDeposits",
+            "args": {
+              "user_id": "${ .trigger.user_id }",
+              "email": "${ .trigger.email }"
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Acreditar dep\u00f3sitos pendientes",
+            "description": "Busca por email y suma el saldo"
+          }
+        }
+      }
+    ]
+  }
+}

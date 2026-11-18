@@ -6,6 +6,8 @@ import { secrets } from 'base44:runtime';
 // Créditos = importe recibido (1:1). Si cambia la tasa, se ajusta en `credits`.
 // Identificador del cliente: `user_id` interno, o el email en `user_id` / `email`
 // (pedidos manuales). Si es un email, se resuelve internamente al usuario.
+// Si ese email aún no tiene cuenta, el depósito queda como PendingDeposit (202) y
+// se acredita automáticamente cuando el cliente se registra o inicia sesión.
 
 const hexToBytes = (hex) => {
   if (!/^[0-9a-f]+$/i.test(hex) || hex.length % 2 !== 0) return null;
@@ -88,8 +90,40 @@ export default async function (req) {
       user = found[0];
     }
 
+    // Sin cuenta todavía: si vino un email, el depósito queda pendiente y se acredita
+    // automáticamente al registrarse (función applyPendingDeposits + su workflow).
     if (!user) {
-      return Response.json({ error: 'User not found' }, { status: 404 });
+      if (!resolvedByEmail) {
+        return Response.json({ error: 'User not found' }, { status: 404 });
+      }
+
+      const pendingAlready = await base44.asServiceRole.entities.PendingDeposit.filter({
+        spinatas_transaction_id
+      });
+      if (pendingAlready.length > 0) {
+        return Response.json({ status: 'already_processed', spinatas_transaction_id });
+      }
+
+      const pendingEmail = identifier.toLowerCase();
+      await base44.asServiceRole.entities.PendingDeposit.create({
+        email: pendingEmail,
+        amount: credits,
+        currency: currency || 'USD',
+        spinatas_transaction_id,
+        status: 'pending',
+        note: 'Depósito de SpinAtlas para un email sin cuenta'
+      });
+
+      return Response.json(
+        {
+          status: 'pending_registration',
+          email: pendingEmail,
+          spinatas_transaction_id,
+          credits,
+          resolved_by: 'email'
+        },
+        { status: 202 }
+      );
     }
 
     // 2. Idempotencia: el mismo aviso reintentado no vuelve a acreditar
