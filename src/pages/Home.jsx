@@ -1,10 +1,17 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, Shield, Zap, TrendingUp } from "lucide-react";
+import { ArrowRight, Shield, Zap, TrendingUp, FlaskConical } from "lucide-react";
 import { useLanguage } from "@/lib/LanguageContext";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import { base44 } from "@/api/base44Client";
 
 export default function Home() {
   const { t } = useLanguage();
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    base44.auth.me().then(setUser).catch(() => setUser(null));
+  }, []);
 
   const features = [
     { icon: <Shield size={24} />, title: t("features.security"), desc: t("features.securityDesc") },
@@ -21,6 +28,14 @@ export default function Home() {
         </div>
         <div className="flex items-center gap-4">
           <LanguageSwitcher />
+          {user?.role === "admin" && (
+            <Link
+              to="/admin/deposit-test"
+              className="flex items-center gap-1.5 px-4 py-2 rounded-full border border-wallet-gold/40 text-wallet-gold text-xs font-semibold hover:bg-wallet-gold/10 transition-colors"
+            >
+              <FlaskConical size={13} /> Test depósito
+            </Link>
+          )}
           <Link to="/dashboard" className="px-5 py-2 rounded-full bg-wallet-gold text-black text-sm font-semibold hover:bg-yellow-400 transition-colors">
             {t("goToDashboard")} →
           </Link>
