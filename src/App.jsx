@@ -11,6 +11,7 @@ import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
 import Analytics from './pages/Analytics';
 import Unsubscribe from './pages/Unsubscribe';
+import AdminDepositTest from './pages/AdminDepositTest';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -45,6 +46,7 @@ const AuthenticatedApp = () => {
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/analytics" element={<Analytics />} />
       <Route path="/unsubscribe" element={<Unsubscribe />} />
+      <Route path="/admin/deposit-test" element={<AdminDepositTest />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
