@@ -4,6 +4,8 @@ import { secrets } from 'base44:runtime';
 // Aviso de depósito confirmado enviado por SpinAtlas.
 // Cabecera obligatoria: X-SpinAtlas-Signature = HMAC-SHA256 (hex) del cuerpo crudo.
 // Créditos = importe recibido (1:1). Si cambia la tasa, se ajusta en `credits`.
+// Identificador del cliente: `user_id` interno, o el email en `user_id` / `email`
+// (pedidos manuales). Si es un email, se resuelve internamente al usuario.
 
 const hexToBytes = (hex) => {
   if (!/^[0-9a-f]+$/i.test(hex) || hex.length % 2 !== 0) return null;
@@ -53,20 +55,39 @@ export default async function (req) {
       return Response.json({ error: 'Invalid JSON body' }, { status: 400 });
     }
 
-    const { user_id, amount, currency, spinatas_transaction_id, timestamp } = payload;
+    const { user_id, email, amount, currency, spinatas_transaction_id, timestamp } = payload;
     const credits = Number(amount);
 
-    if (!user_id || !spinatas_transaction_id || !Number.isFinite(credits) || credits <= 0) {
+    const identifier = String(user_id || email || '').trim();
+    const resolvedByEmail = identifier.includes('@');
+
+    if (!identifier || !spinatas_transaction_id || !Number.isFinite(credits) || credits <= 0) {
       return Response.json(
-        { error: 'user_id, amount > 0 and spinatas_transaction_id are required' },
+        { error: 'user_id (or email), amount > 0 and spinatas_transaction_id are required' },
         { status: 400 }
       );
     }
 
+    if (!resolvedByEmail && !/^[a-f0-9]{24}$/i.test(identifier)) {
+      return Response.json({ error: 'user_id must be a valid user id or an email' }, { status: 400 });
+    }
+
     const base44 = createClientFromRequest(req);
 
-    const users = await base44.asServiceRole.entities.User.filter({ id: user_id });
-    const user = users[0];
+    let user;
+    if (resolvedByEmail) {
+      for (const candidate of [...new Set([identifier, identifier.toLowerCase()])]) {
+        const found = await base44.asServiceRole.entities.User.filter({ email: candidate });
+        if (found[0]) {
+          user = found[0];
+          break;
+        }
+      }
+    } else {
+      const found = await base44.asServiceRole.entities.User.filter({ id: identifier });
+      user = found[0];
+    }
+
     if (!user) {
       return Response.json({ error: 'User not found' }, { status: 404 });
     }
@@ -80,7 +101,7 @@ export default async function (req) {
     }
 
     // 3. Acreditar créditos en el monedero interno
-    const wallets = await base44.asServiceRole.entities.WalletBalance.filter({ user_id });
+    const wallets = await base44.asServiceRole.entities.WalletBalance.filter({ user_id: user.id });
     const wallet = wallets[0];
     const newBalance = (wallet ? wallet.balance : 0) + credits;
     const now = new Date().toISOString();
@@ -92,14 +113,14 @@ export default async function (req) {
       });
     } else {
       await base44.asServiceRole.entities.WalletBalance.create({
-        user_id,
+        user_id: user.id,
         balance: newBalance,
         updated_at: now
       });
     }
 
     await base44.asServiceRole.entities.WalletTransaction.create({
-      user_id,
+      user_id: user.id,
       type: 'deposit',
       amount: credits,
       status: 'completed',
@@ -133,7 +154,8 @@ export default async function (req) {
 
     return Response.json({
       status: 'credited',
-      user_id,
+      user_id: user.id,
+      resolved_by: resolvedByEmail ? 'email' : 'user_id',
       spinatas_transaction_id,
       credits,
       balance: newBalance,

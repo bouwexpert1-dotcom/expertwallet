@@ -38,8 +38,9 @@ export default async function (req) {
     const origin = req.headers.get('x-base44-app-url') || 'https://expert-wallet-flow.base44.app';
     const endpoint = `${origin}/functions/spinatasDepositConfirmed`;
 
+    // Se envía el email (no el id) para probar también la resolución de pedidos manuales.
     const payload = {
-      user_id: user.id,
+      user_id: user.email,
       amount: 1,
       currency: 'USD',
       spinatas_transaction_id: `TEST-${crypto.randomUUID()}`,
