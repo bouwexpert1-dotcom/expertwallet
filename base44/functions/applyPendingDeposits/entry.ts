@@ -38,7 +38,7 @@ export default async function (req) {
       const now = new Date().toISOString();
 
       const already = await base44.asServiceRole.entities.WalletTransaction.filter({
-        jti: pending.spinatlas_transaction_id
+        jti: pending.spinatlas_reference
       });
 
       if (already.length > 0) {
@@ -73,8 +73,8 @@ export default async function (req) {
         type: 'deposit',
         amount: pending.amount,
         status: 'completed',
-        description: `SpinAtlas deposit ${pending.spinatlas_transaction_id} (${pending.amount} ${pending.currency || 'USD'})`,
-        jti: pending.spinatlas_transaction_id
+        description: `SpinAtlas deposit ${pending.spinatlas_reference} (${pending.amount} ${pending.currency || 'USD'})`,
+        jti: pending.spinatlas_reference
       });
 
       await base44.asServiceRole.entities.PendingDeposit.update(pending.id, {

@@ -98,7 +98,7 @@ export default async function (req) {
       }
 
       const pendingAlready = await base44.asServiceRole.entities.PendingDeposit.filter({
-        spinatas_transaction_id
+        spinatlas_reference: spinatas_transaction_id
       });
       if (pendingAlready.length > 0) {
         return Response.json({ status: 'already_processed', spinatas_transaction_id });
@@ -109,7 +109,7 @@ export default async function (req) {
         email: pendingEmail,
         amount: credits,
         currency: currency || 'USD',
-        spinatas_transaction_id,
+        spinatlas_reference: spinatas_transaction_id,
         status: 'pending',
         note: 'Depósito de SpinAtlas para un email sin cuenta'
       });

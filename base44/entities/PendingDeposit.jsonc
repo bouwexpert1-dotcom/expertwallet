@@ -12,7 +12,7 @@
       "type": "string",
       "default": "USD"
     },
-    "spinatlas_transaction_id": {
+    "spinatlas_reference": {
       "type": "string"
     },
     "status": {
@@ -41,7 +41,7 @@
   "required": [
     "email",
     "amount",
-    "spinatlas_transaction_id"
+    "spinatlas_reference"
   ],
   "rls": {
     "read": {
