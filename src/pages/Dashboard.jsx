@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useLanguage } from "@/lib/LanguageContext";
-import { ArrowDownLeft, ArrowUpRight, ArrowLeftRight, BarChart2, Loader2, FlaskConical } from "lucide-react";
+import { ArrowDownLeft, ArrowUpRight, ArrowLeftRight, BarChart2, Loader2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import TransactionModal from "@/components/TransactionModal";
@@ -71,21 +71,13 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-wallet-dark text-white font-sans px-4 py-8 max-w-2xl mx-auto">
       {/* Header */}
-      <div className="flex flex-wrap items-center justify-between gap-3 mb-10">
+      <div className="flex items-center justify-between mb-10">
         <span className="text-xl font-bold text-wallet-gold">Expert<span className="text-white">Wallet</span></span>
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="flex items-center gap-3">
           <LanguageSwitcher />
           <Link to="/analytics" className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-wallet-border text-wallet-muted hover:text-wallet-gold hover:border-wallet-gold/40 transition-colors text-xs font-medium">
             <BarChart2 size={13} /> {t('analytics')}
           </Link>
-          {user?.role === "admin" && (
-            <Link
-              to="/admin/deposit-test"
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-wallet-gold/40 text-wallet-gold hover:bg-wallet-gold/10 transition-colors text-xs font-medium"
-            >
-              <FlaskConical size={13} /> Test depósito
-            </Link>
-          )}
           <span className="text-wallet-muted text-sm">{user?.full_name || user?.email}</span>
         </div>
       </div>
