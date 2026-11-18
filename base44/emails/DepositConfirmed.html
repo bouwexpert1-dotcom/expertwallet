@@ -1,0 +1,81 @@
+<mjml>
+  <mj-head>
+    <mj-title>Depósito confirmado: {{credits}} créditos acreditados</mj-title>
+    <mj-preview>Recibo de créditos acreditados en tu cuenta de ExpertWallet</mj-preview>
+    <mj-attributes>
+      <mj-all font-family="Inter, Arial, Helvetica, sans-serif" />
+      <mj-section background-color="#ffffff" padding="0 36px" />
+      <mj-text color="#0a0a0a" font-size="15px" line-height="1.6" padding="0" />
+      <mj-button background-color="#facc15" color="#000000" border-radius="8px" font-weight="700" inner-padding="14px 28px" align="left" />
+      <mj-class name="label" color="#737373" font-size="14px" />
+      <mj-class name="value" color="#0a0a0a" font-size="14px" font-weight="700" />
+    </mj-attributes>
+  </mj-head>
+  <mj-body background-color="#ffffff">
+    <mj-section background-color="#facc15" padding="24px 36px">
+      <mj-column>
+        <mj-image src="https://media.base44.com/images/public/69d91c8f1a7d292748033ae0/9d200eaa5_logo.png" alt="ExpertWallet" width="40px" align="left" padding="0" />
+        <mj-text font-size="18px" font-weight="800" color="#000000" padding="10px 0 0" letter-spacing="-0.2px">ExpertWallet</mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-section padding="40px 36px 8px">
+      <mj-column>
+        <mj-text font-size="30px" font-weight="800" line-height="1.2" letter-spacing="-0.4px">Depósito confirmado</mj-text>
+        <mj-text color="#737373" font-size="16px" padding="10px 0 0">
+          Hola {{first_name}}, acreditamos {{credits}} créditos en tu cuenta de ExpertWallet.
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-section padding="24px 36px 8px">
+      <mj-column>
+        <mj-table cellpadding="0" cellspacing="0" width="100%">
+          <tr>
+            <td style="padding:12px 0;border-bottom:1px solid #e5e5e5;color:#737373;font-size:14px;font-family:Inter,Arial,sans-serif;">Créditos acreditados</td>
+            <td style="padding:12px 0;border-bottom:1px solid #e5e5e5;color:#0a0a0a;font-size:14px;font-weight:700;text-align:right;font-family:Inter,Arial,sans-serif;">{{credits}}</td>
+          </tr>
+          <tr>
+            <td style="padding:12px 0;border-bottom:1px solid #e5e5e5;color:#737373;font-size:14px;font-family:Inter,Arial,sans-serif;">Importe recibido</td>
+            <td style="padding:12px 0;border-bottom:1px solid #e5e5e5;color:#0a0a0a;font-size:14px;font-weight:700;text-align:right;font-family:Inter,Arial,sans-serif;">{{amount}} {{currency}}</td>
+          </tr>
+          <tr>
+            <td style="padding:12px 0;border-bottom:1px solid #e5e5e5;color:#737373;font-size:14px;font-family:Inter,Arial,sans-serif;">Referencia</td>
+            <td style="padding:12px 0;border-bottom:1px solid #e5e5e5;color:#0a0a0a;font-size:14px;font-weight:700;text-align:right;font-family:Inter,Arial,sans-serif;">{{reference}}</td>
+          </tr>
+          <tr>
+            <td style="padding:12px 0;border-bottom:1px solid #e5e5e5;color:#737373;font-size:14px;font-family:Inter,Arial,sans-serif;">Fecha</td>
+            <td style="padding:12px 0;border-bottom:1px solid #e5e5e5;color:#0a0a0a;font-size:14px;font-weight:700;text-align:right;font-family:Inter,Arial,sans-serif;">{{date}}</td>
+          </tr>
+          <tr>
+            <td style="padding:12px 0;color:#737373;font-size:14px;font-family:Inter,Arial,sans-serif;">Saldo disponible</td>
+            <td style="padding:12px 0;color:#0a0a0a;font-size:14px;font-weight:700;text-align:right;font-family:Inter,Arial,sans-serif;">{{balance}} créditos</td>
+          </tr>
+        </mj-table>
+      </mj-column>
+    </mj-section>
+
+    <mj-section padding="24px 36px 8px">
+      <mj-column>
+        <mj-button href="https://expert-wallet.online/dashboard">Ver mi saldo</mj-button>
+      </mj-column>
+    </mj-section>
+
+    <mj-section background-color="#f5f5f5" padding="20px 24px" border-radius="8px">
+      <mj-column>
+        <mj-text color="#737373" font-size="13px" line-height="1.6">
+          Este es un comprobante automático de créditos acreditados. Los créditos son un saldo interno de la plataforma: no representan dinero depositado en ExpertWallet ni se retiran como efectivo.
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-section padding="32px 36px 40px">
+      <mj-column>
+        <mj-text color="#737373" font-size="12px" line-height="1.6">
+          Si no reconoces esta operación, contacta a soporte desde tu cuenta. No compartas tus datos de acceso con nadie.
+        </mj-text>
+        <mj-text color="#0a0a0a" font-size="12px" font-weight="700" padding="16px 0 0">ExpertWallet</mj-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>
